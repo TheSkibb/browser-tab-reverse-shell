@@ -1,6 +1,7 @@
 package main
 
 import (
+	"bufio"
 	"fmt"
 	"log"
 	"net/http"
@@ -11,8 +12,16 @@ import (
 func cmdHandler(w http.ResponseWriter, r *http.Request) {
 	fmt.Println("recieved req")
 	time.Sleep(1 / 2 * time.Second)
+
+	fmt.Print("(c2)>")
+	reader := bufio.NewReader(os.Stdin)
+	input, err := reader.ReadString('\n')
+	if err != nil {
+		log.Fatal("could not read from stdin", err)
+	}
+
 	enableCors(&w)
-	fmt.Fprint(w, "console.log(document.title)")
+	fmt.Fprint(w, input)
 }
 
 func enableCors(w *http.ResponseWriter) {
