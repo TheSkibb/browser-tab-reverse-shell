@@ -11,8 +11,15 @@ import (
 )
 
 func cmdHandler(w http.ResponseWriter, r *http.Request) {
-	fmt.Println("recieved req:")
-	time.Sleep(1 / 2 * time.Second)
+
+	//get ip address of request
+	ip := r.Header.Get("X-Forwarded-For")
+	if ip == "" {
+		ip = r.RemoteAddr
+	}
+
+	fmt.Println("recieved req from: ", ip)
+
 	feedbackBase64 := r.URL.Query().Get("res")
 	feedback, err := base64.StdEncoding.DecodeString(feedbackBase64)
 
@@ -30,6 +37,9 @@ func cmdHandler(w http.ResponseWriter, r *http.Request) {
 	}
 
 	enableCors(&w)
+
+	time.Sleep(1 / 2 * time.Second)
+
 	fmt.Fprint(w, input)
 }
 
